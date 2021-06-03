@@ -1,0 +1,27 @@
+version: '2.1'
+services:
+  mysql-database:
+    image: mysql/mysql-server:5.7
+    volumes:
+      - ./dbdata:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: appdatabase
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - '3301:3306'
+    restart: always
+  my-app:
+    image: medalibettaieb/demo-rest-api:0.0.1-SNAPSHOT
+    ports:
+      - '8087:8080'
+    volumes:
+      - /data/myapp-spring-boot-app
+    depends_on:
+      mysql-database:
+        condition: service_healthy
+  adminer:
+    image: adminer
+    restart: on-failure
+    ports:
+      - 8080:8080
